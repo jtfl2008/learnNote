@@ -60,3 +60,29 @@ First Header | Second Header | Third Header
 :----------- | :-----------: | -----------:
 Left | Center | Right
 Left | Center | Right
+目录结构
+
+```md
+─ src
+├── common #
+│ ├── audio #音频
+│ ├── images #图片
+│ ├── javascript #api 接口、cache、config 等 js 文件
+│ ├── style #公用 style
+├── components #组件
+├── pages #页面，处理业务，主要分为三个模块
+│ ├── admin
+│ ├── seller
+│ ├── user
+│ ├── index.vue
+│ ├── login.vue
+├── router #路由
+│ ├── index.js
+├── store #vuex 的 store，分了三个模块
+│ ├── admin
+│ ├── seller
+│ ├── user
+│ ├── index.js
+├── App.vue
+├── main.js
+```
