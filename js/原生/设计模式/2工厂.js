@@ -1,3 +1,4 @@
+// 不暴露创建对象的具体逻辑，而是将逻辑封装在一个函数中
 function VehicleFactory() {}
 VehicleFactory.prototype.vehicleClass = Car
 VehicleFactory.prototype.createVehicle = function(options) {
