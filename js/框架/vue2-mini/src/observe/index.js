@@ -2,6 +2,8 @@ import { arrayMethods } from './array';
 import Dep from './dep';
 class Observe {
   constructor(data) {
+    this.value = data;
+    this.dep = new Dep();
     Object.defineProperty(data, '__ob__', {
       value: this,
       enumerable: false,
