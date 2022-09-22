@@ -1,3 +1,4 @@
+import { nextTick } from './util/next-tick';
 export function renderMixin(Vue) {
   Vue.prototype._render = function () {
     const vm = this;
@@ -22,4 +23,5 @@ export function renderMixin(Vue) {
       ? JSON.stringify(val)
       : val;
   };
+  Vue.prototype.$nextTick = nextTick;
 }
