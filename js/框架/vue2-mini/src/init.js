@@ -1,4 +1,7 @@
 import { initState } from './state';
+import { compileToFunctions } from './compiler/index';
+import { callHook, mountComponent } from './lifecycle';
+import { mergeOptions } from './util/index';
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
     let vm = this;
