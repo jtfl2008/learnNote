@@ -1,3 +1,4 @@
+import Dep from './observe/dep.js';
 import { observe } from './observe/index.js';
 import Watcher from './observe/watcher.js';
 
@@ -34,6 +35,51 @@ export function initState(vm) {
   }
 }
 
+function initProps() {}
+function initMethod() {}
+function initData() {}
+function initComputed(vm) {
+  let computed = vm.$options.computed;
+  let watchers = (vm._computedWatchers = {});
+  for (let k in computed) {
+    let userDef = computed[k];
+    let getter = typeof userDef === 'function' ? userDef : user.get;
+    watchers[k] = new Watcher(vm, getter, () => {}, { lazy: true });
+    defineComputed(vm, k, userDef);
+  }
+}
+let sharedPropertyDefinition = {
+  enumerable: true,
+  configurable: true,
+  get: () => {},
+  set: () => {},
+};
+
+function defineComputed(vm, key, userDef) {
+  if (typeof userDef === 'function') {
+    sharedPropertyDefinition.get = createComputedGetter(key);
+  } else {
+    sharedPropertyDefinition = {
+      get: createComputedGetter(key),
+      set: userDef.set,
+    };
+    Object.defineProperty(vm, key, sharedPropertyDefinition);
+  }
+}
+function createComputedGetter(key) {
+  return () => {
+    let watcher = this._computedWatchers[key];
+    if (watcher) {
+      if (watcher.dirty) {
+        watcher.evaluate();
+        if (Dep.target) {
+          watcher.depend();
+        }
+      }
+      return watcher.value;
+    }
+  };
+}
 function createWatcher(vm, key, handler, options = {}) {
   if (typeof handler === 'object') {
     options = handler;

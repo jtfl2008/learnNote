@@ -11,6 +11,9 @@ export default class Watcher {
     this.deps = [];
     this.depsId = new set();
 
+    this.lazy = !!options.lazy;
+    this.dirty = this.lazy;
+
     if (typeof exprOrFn === 'function') {
       this.getter = exprOrFn;
     } else {
@@ -23,7 +26,7 @@ export default class Watcher {
         return obj;
       };
     }
-    this.value = this.get();
+    this.value = this.lazy ? undefined : this.get();
   }
   get() {
     pushTarget(this);
@@ -40,7 +43,21 @@ export default class Watcher {
     }
   }
   update() {
-    queueWatcher(this);
+    if (this.lazy) {
+      this.dirty = true;
+    } else {
+      queueWatcher(this);
+    }
+  }
+  evaluate() {
+    this.value = this.get();
+    this.dirty = false;
+  }
+  depend() {
+    let i = this.deps.length;
+    while (i--) {
+      this.deps[i].depend();
+    }
   }
   run() {
     let newVal = this.getter();
