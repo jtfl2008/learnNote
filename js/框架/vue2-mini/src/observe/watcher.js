@@ -11,8 +11,19 @@ export default class Watcher {
     this.deps = [];
     this.depsId = new set();
 
-    this.getter = exprOrFn;
-    this.get();
+    if (typeof exprOrFn === 'function') {
+      this.getter = exprOrFn;
+    } else {
+      this.getter = function () {
+        let path = exprOrFn.split('.');
+        let obj = vm;
+        for (let i = 0; i < path.length; i++) {
+          obj = obj[path[i]];
+        }
+        return obj;
+      };
+    }
+    this.value = this.get();
   }
   get() {
     pushTarget(this);
@@ -32,6 +43,15 @@ export default class Watcher {
     queueWatcher(this);
   }
   run() {
-    this.getter.call(this.vm);
+    let newVal = this.getter();
+    let oldVal = this.value;
+    this.value = newVal;
+    if (this.user) {
+      if (newVal !== oldVal || isObject(newVal)) {
+        this.cb.call(this.vm, newVal, oldVal);
+      }
+    } else {
+      this.cb.call(this.vm);
+    }
   }
 }
