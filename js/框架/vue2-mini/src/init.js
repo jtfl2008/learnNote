@@ -5,7 +5,7 @@ import { mergeOptions } from './util/index';
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
     let vm = this;
-    vm.$options = options;
+    vm.$options = mergeOptions(vm.constructor.options, options);
     callHook(vm, 'beforeCreate');
     // 初始化状态 initProps, initMethod initData initComputed initWatch
     initState(vm);
