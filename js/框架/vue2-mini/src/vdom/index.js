@@ -1,3 +1,4 @@
+import { isObject, isReservedTag } from '../util';
 export default class Vnode {
   /**
    * @param {标签名} tag
@@ -32,4 +33,23 @@ export function createElement(vm, tag, data = {}, ...children) {
     let Ctor = vm.options.components[tag];
     return createComponent(vm, tag, data, key, children, Ctor);
   }
+}
+function createComponent(vm, tag, data, key, children, Ctor) {
+  if (isObject(Ctor)) {
+    Ctor = vm.$options._base.extend(Ctor);
+  }
+  data.hook = {
+    init(vnode) {
+      let child = (vnode.componentInstance = new Ctor({ _isComponent: true }));
+      child.$mount();
+    },
+  };
+  return new Vnode(
+    `vue-component-${Ctor.cid}-${tag}`,
+    data,
+    key,
+    undefined,
+    undefined,
+    { Ctor, children },
+  );
 }
