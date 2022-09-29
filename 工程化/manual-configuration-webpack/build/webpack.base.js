@@ -34,8 +34,9 @@ module.export = {
       },
       {
         test: /\.js$/,
+        include: path.resolve(__dirname, '../src'),
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: ['cache-loader', 'thread-loader', 'babel-loader'],
       },
       {
         test: /\.vue$/,

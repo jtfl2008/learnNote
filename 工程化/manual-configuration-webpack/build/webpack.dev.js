@@ -6,6 +6,8 @@ module.exports = merge(base, {
   mode: 'development',
   devServer: {
     open: true,
+    // 开启热更新
+    hot: true,
     devtool: 'eval-cheap-module-source-map',
   },
   plugins: [
